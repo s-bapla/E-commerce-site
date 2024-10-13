@@ -34,9 +34,52 @@ router.post('/', async (request, response) => {
   }
   const user = await User.findById(decodedUserToken.id);
   const { title, description, imageUrl, price } = request.body;
-  const product = new Product({ title, description, imageUrl, price, user: user.id });
+  const product = new Product({
+    title,
+    description,
+    imageUrl,
+    price,
+    user: user.id,
+  });
   const result = await product.save();
   response.status(201).json(result);
+});
+
+router.put('/:id', async (request, response) => {
+  const id = request.params.id;
+  const decodedUserToken = jwt.verify(
+    getTokenFrom(request),
+    process.env.SECRET
+  );
+  if (!decodedUserToken.id) {
+    return response.status(401).json({ error: 'token invalid' });
+  }
+  const { title, description, imageUrl, price } = request.body;
+  const product = await Product.findByIdAndUpdate(
+    id,
+    {
+      title,
+      description,
+      imageUrl,
+      price,
+      user: decodedUserToken.id,
+    },
+    { new: true }
+  );
+  response.status(201).json(product);
+});
+
+router.delete('/:id', async (request, response) => {
+  const id = request.params.id;
+  const decodedUserToken = jwt.verify(
+    getTokenFrom(request),
+    process.env.SECRET
+  );
+  if (!decodedUserToken.id) {
+    return response.status(401).json({ error: 'token invalid' });
+  }
+  await Product.findByIdAndDelete(id);
+  response.status(204).end();
 });
 
 module.exports = router;

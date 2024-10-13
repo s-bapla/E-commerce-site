@@ -17,4 +17,14 @@ const createNew = async (content) => {
   return response.data;
 };
 
-export default { getAll, createNew, setToken };
+const update = async (content, productId) => {
+  const config = { headers: { Authorization: token } };
+  const response = await axios.put(baseUrl + '/' + productId, content, config);
+  return response.data;
+}; 
+
+const deleteProduct = async id => {
+  const config = { headers: { Authorization: token } };
+  await axios.delete(baseUrl + '/' + id, config);
+}
+export default { getAll, createNew, setToken, update, deleteProduct };

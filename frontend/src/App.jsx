@@ -9,6 +9,7 @@ import SignUp from './pages/SignUp';
 import Login from './pages/Login';
 import productService from './services/productService';
 import { set_user } from './reducers/userReducer';
+import EditProduct from './pages/EditProduct';
 
 function App() {
   const dispatch = useDispatch();
@@ -29,6 +30,7 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path='/edit/:id' element={<EditProduct />} />
         <Route path='/add-product' element={<AddProduct />} />
         <Route path='/signup' element={<SignUp />} />
         <Route path='/login' element={<Login />} />
