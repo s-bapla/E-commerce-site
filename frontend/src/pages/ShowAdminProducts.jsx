@@ -1,4 +1,4 @@
-import ProductGrid from '../components/productGrid/ProductGrid';
+import ProductGrid from '../components/AdminProductGrid/ProductGrid';
 import Box from '@mui/material/Box';
 import NavBar from '../components/NavBar';
 

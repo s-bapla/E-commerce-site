@@ -3,9 +3,11 @@ import { OutlinedInput } from '@mui/material';
 import { InputAdornment } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { addProduct } from '../../reducers/productReducer';
+import { useNavigate } from 'react-router-dom';
 
 const AddProductForm = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   const handleAddProduct = (e) => {
     e.preventDefault();
@@ -17,6 +19,7 @@ const AddProductForm = () => {
 
     const product = { title, price, imageUrl, description };
     dispatch(addProduct(product));
+    navigate('/');
   };
   return (
     <form style={{ textAlign: 'center' }} onSubmit={handleAddProduct}>
