@@ -13,6 +13,26 @@ const getTokenFrom = (request) => {
   return null;
 };
 
+const authMiddleWare = (request, response, next) => {
+  const decodedUserToken = jwt.verify(
+    getTokenFrom(request),
+    process.env.SECRET
+  );
+  if (!decodedUserToken.id) {
+    return response.status(401).json({ error: 'token invalid' });
+  }
+  request.user = { id: decodedUserToken.id, role: decodedUserToken.role };
+  next();
+};
+
+const adminMiddleware = (req, res, next) => {
+  if (req.user && req.user.role === 'admin') {
+    next();
+  } else {
+    return res.status(403).json({ error: 'Access denied. Admins only.' });
+  }
+};
+
 router.get('/', async (req, res) => {
   const products = await Product.find({});
   res.json(products);
@@ -24,15 +44,8 @@ router.get('/:id', async (req, res) => {
   res.json(product);
 });
 
-router.post('/', async (request, response) => {
-  const decodedUserToken = jwt.verify(
-    getTokenFrom(request),
-    process.env.SECRET
-  );
-  if (!decodedUserToken.id) {
-    return response.status(401).json({ error: 'token invalid' });
-  }
-  const user = await User.findById(decodedUserToken.id);
+router.post('/', authMiddleWare, adminMiddleware, async (request, response) => {
+  const user = await User.findById(request.user.id);
   const { title, description, imageUrl, price } = request.body;
   const product = new Product({
     title,
@@ -42,44 +55,43 @@ router.post('/', async (request, response) => {
     user: user.id,
   });
   const result = await product.save();
+  user.products.push(result);
+  await user.save();
   response.status(201).json(result);
 });
 
-router.put('/:id', async (request, response) => {
-  const id = request.params.id;
-  const decodedUserToken = jwt.verify(
-    getTokenFrom(request),
-    process.env.SECRET
-  );
-  if (!decodedUserToken.id) {
-    return response.status(401).json({ error: 'token invalid' });
+router.put(
+  '/:id',
+  authMiddleWare,
+  adminMiddleware,
+  async (request, response) => {
+    const id = request.params.id;
+    const { title, description, imageUrl, price } = request.body;
+    const product = await Product.findByIdAndUpdate(
+      id,
+      {
+        title,
+        description,
+        imageUrl,
+        price,
+        user: request.user.id,
+      },
+      { new: true }
+    );
+    response.status(201).json(product);
   }
-  const { title, description, imageUrl, price } = request.body;
-  const product = await Product.findByIdAndUpdate(
-    id,
-    {
-      title,
-      description,
-      imageUrl,
-      price,
-      user: decodedUserToken.id,
-    },
-    { new: true }
-  );
-  response.status(201).json(product);
-});
+);
 
-router.delete('/:id', async (request, response) => {
-  const id = request.params.id;
-  const decodedUserToken = jwt.verify(
-    getTokenFrom(request),
-    process.env.SECRET
-  );
-  if (!decodedUserToken.id) {
-    return response.status(401).json({ error: 'token invalid' });
+router.delete(
+  '/:id',
+  authMiddleWare,
+  adminMiddleware,
+  async (request, response) => {
+    const id = request.params.id;
+
+    await Product.findByIdAndDelete(id);
+    response.status(204).end();
   }
-  await Product.findByIdAndDelete(id);
-  response.status(204).end();
-});
+);
 
 module.exports = router;

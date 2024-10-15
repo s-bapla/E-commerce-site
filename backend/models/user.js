@@ -4,7 +4,9 @@ const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   name: String,
-  product: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
+  role: { type: String, enum: ['admin', 'customer'], default: 'customer' },
+  products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
+  cart: { type: mongoose.Schema.Types.ObjectId, ref: 'Cart' },
 });
 
 userSchema.set('toJSON', {

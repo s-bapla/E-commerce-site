@@ -2,11 +2,12 @@ import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import PropTypes from 'prop-types';
 import { Button, CardContent, CardMedia, Typography } from '@mui/material';
-
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { IconButton } from '@mui/material';
 
 const ProductCard = ({ product }) => {
   return (
-    <Card sx={{ width: 330 }}>
+    <Card elevation={5} sx={{ width: 330 }}>
       <CardHeader title={product.title} />
       <CardMedia component='img' height='194' image={product.imageUrl} />
       <CardContent>
@@ -15,10 +16,12 @@ const ProductCard = ({ product }) => {
         </Typography>
       </CardContent>{' '}
       <CardContent>
-        <Typography variant='body2' sx={{ color: 'text.secondary' }}>
+        <Typography variant='body2' sx={{ color: 'text.secondary', margin: 1 }}>
           {product.description}
         </Typography>
-        <Button>Add to Cart</Button>
+        <IconButton>
+          <ShoppingCartIcon sx={{ color: '#1976d2' }} />
+        </IconButton>
         <Button>Save</Button>
       </CardContent>
     </Card>

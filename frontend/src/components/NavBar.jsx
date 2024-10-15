@@ -7,7 +7,6 @@ import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
@@ -21,6 +20,7 @@ import { blue } from '@mui/material/colors';
 import { useDispatch, useSelector } from 'react-redux';
 import { set_user } from '../reducers/userReducer';
 // import { useSelector } from 'react-redux';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const StyledButton = styled(Button)(() => ({
   my: 2,
@@ -30,8 +30,8 @@ const StyledButton = styled(Button)(() => ({
     background: blue[300],
   },
 }));
-const pages = ['Products', 'Admin Products', 'Add Products'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const pages = ['Products', 'Cart', 'Admin Products', 'Add Products'];
+const settings = ['Orders', 'Cart', 'Logout'];
 const settingsLoggedOut = ['Sign Up', 'Log In'];
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -77,6 +77,8 @@ function ResponsiveAppBar() {
       case 'Add Products':
         navigate('/add-product');
         break;
+      case 'Cart':
+        navigate(`/cart/${user.id}`);
     }
   };
 
@@ -130,11 +132,31 @@ function ResponsiveAppBar() {
               onClose={handleCloseNavMenu}
               sx={{ display: { xs: 'block', md: 'none' } }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={() => handleNavigate(page)}>
-                  <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
-                </MenuItem>
-              ))}
+              {pages.map((page) => {
+                if (
+                  (page === 'Admin Products' || page === 'Add Products') &&
+                  user &&
+                  user.role === 'Admin'
+                ) {
+                  return (
+                    <MenuItem key={page} onClick={() => handleNavigate(page)}>
+                      <Typography sx={{ textAlign: 'center' }}>
+                        {page}
+                      </Typography>
+                    </MenuItem>
+                  );
+                }
+                if (page === 'Products' || page === 'Cart') {
+                  return (
+                    <MenuItem key={page} onClick={() => handleNavigate(page)}>
+                      <Typography sx={{ textAlign: 'center' }}>
+                        {page}
+                      </Typography>
+                    </MenuItem>
+                  );
+                }
+                return null;
+              })}
             </Menu>
           </Box>
           <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
@@ -157,16 +179,39 @@ function ResponsiveAppBar() {
             LOGO
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <StyledButton key={page} onClick={() => handleNavigate(page)}>
-                {page}
-              </StyledButton>
-            ))}
+            {pages.map((page) => {
+              if (
+                (pages === 'Admin Products' || pages === 'Add Products') &&
+                user &&
+                user.role === 'Admin'
+              ) {
+                return (
+                  <StyledButton key={page} onClick={() => handleNavigate(page)}>
+                    {page}
+                  </StyledButton>
+                );
+              }
+              if (page === 'Products') {
+                return (
+                  <StyledButton key={page} onClick={() => handleNavigate(page)}>
+                    {page}
+                  </StyledButton>
+                );
+              }
+              if (page === 'Cart' && user) {
+                return (
+                  <StyledButton key={page} onClick={() => handleNavigate(page)}>
+                    {page}
+                  </StyledButton>
+                );
+              }
+              return null;
+            })}
           </Box>
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title='Open settings'>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt='Remy Sharp' src='/static/images/avatar/2.jpg' />
+                <AccountCircleIcon sx={{ fontSize: 40, color: 'white'}} />
               </IconButton>
             </Tooltip>
             <Menu

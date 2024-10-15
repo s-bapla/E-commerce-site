@@ -1,5 +1,5 @@
 import './App.css';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { initialize } from './reducers/productReducer';
 import AddProduct from './pages/AddProduct';
@@ -11,31 +11,60 @@ import productService from './services/productService';
 import { set_user } from './reducers/userReducer';
 import EditProduct from './pages/EditProduct';
 import ShowProducts from './pages/ShowProducts';
+import { Navigate } from 'react-router-dom';
 
 function App() {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(initialize());
   }, [dispatch]);
 
-    useEffect(() => {
-      const userJSON = window.localStorage.getItem('user');
-      if (userJSON) {
-        const user = JSON.parse(userJSON);
-        productService.setToken(user.token);
-        dispatch(set_user(user));
-      }
-    }, [dispatch]);
+  useEffect(() => {
+    const userJSON = window.localStorage.getItem('user');
+    if (userJSON) {
+      const user = JSON.parse(userJSON);
+      productService.setToken(user.token);
+      dispatch(set_user(user));
+    }
+  }, [dispatch]);
 
   return (
     <Router>
       <Routes>
-        <Route path='/edit/:id' element={<EditProduct />} />
-        <Route path='/add-product' element={<AddProduct />} />
+        <Route
+          path='/edit/:id'
+          element={user &&
+            user.role === 'Admin' ? (
+              <EditProduct />
+            ) : (
+              <Navigate replace to='/' />
+            )
+          }
+        />
+        <Route
+          path='/add-product'
+          element={
+            user && user.role === 'Admin' ? (
+              <AddProduct />
+            ) : (
+              <Navigate replace to='/' />
+            )
+          }
+        />
         <Route path='/signup' element={<SignUp />} />
         <Route path='/login' element={<Login />} />
-        <Route path='/admin' element={<ShowAdminProducts />} />
+        <Route
+          path='/admin'
+          element={
+            user && user.role === 'Admin' ? (
+              <ShowAdminProducts />
+            ) : (
+              <Navigate replace to='/' />
+            )
+          }
+        />
         <Route path='/' element={<ShowProducts />} />
       </Routes>
     </Router>

@@ -27,4 +27,4 @@ const deleteProduct = async id => {
   const config = { headers: { Authorization: token } };
   await axios.delete(baseUrl + '/' + id, config);
 }
-export default { getAll, createNew, setToken, update, deleteProduct };
+export default { getAll, createNew, setToken, update, deleteProduct, token };
