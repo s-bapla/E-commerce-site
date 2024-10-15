@@ -2,6 +2,7 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const Cart = require('../models/cart');
 
 const router = express.Router();
 
@@ -27,12 +28,15 @@ router.post('/', async (req, res) => {
   });
 
   const result = await newUser.save();
+  const cart = new Cart({ products: [], user: result._id });
+  result.cart = cart;
+  await cart.save();
+  await result.save();
   const userForToken = { username: result.username, id: result._id };
 
   const token = jwt.sign(userForToken, process.env.SECRET);
 
   res.status(201).send({ token, username: result.username, id: result.id });
-
 });
 
 module.exports = router;

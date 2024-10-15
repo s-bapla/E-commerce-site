@@ -1,11 +1,13 @@
 import axios from 'axios';
-import productService from './productService';
 const baseUrl = 'http://localhost:3000/api/cart';
 
 const getCart = async () => {
+  const userJSON = window.localStorage.getItem('user');
+  const user = JSON.parse(userJSON);
+  console.log(user);
   const config = {
     headers: {
-      Authorization: productService.token,
+      Authorization: 'Bearer ' + user.token,
     },
   };
   const res = await axios.get(baseUrl, config);
@@ -13,9 +15,11 @@ const getCart = async () => {
 };
 
 const postCart = async (data) => {
+  const userJSON = window.localStorage.getItem('user');
+  const user = JSON.parse(userJSON);
   const config = {
     headers: {
-      Authorization: productService.token,
+      Authorization: 'Bearer ' + user.token,
     },
   };
   const res = await axios.post(baseUrl, data, config);
@@ -23,13 +27,15 @@ const postCart = async (data) => {
 };
 
 const putCart = async (product) => {
+  const userJSON = window.localStorage.getItem('user');
+  const user = JSON.parse(userJSON);
   const config = {
     headers: {
-      Authorization: productService.token,
+      Authorization: 'Bearer ' + user.token,
     },
   };
-  const res = await axios.post(baseUrl, product, config);
+  const res = await axios.put(baseUrl, product, config);
   return res.data;
 };
- 
-export default {getCart, postCart, putCart}
+
+export default { getCart, postCart, putCart };

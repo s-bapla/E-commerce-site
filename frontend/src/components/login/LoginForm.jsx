@@ -18,7 +18,7 @@ const LoginForm = () => {
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  const handleLogInUser = (e) => {
+  const handleLogInUser = async (e) => {
     e.preventDefault();
 
     const username = e.target.username.value;

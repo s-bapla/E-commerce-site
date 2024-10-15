@@ -12,14 +12,12 @@ import { set_user } from './reducers/userReducer';
 import EditProduct from './pages/EditProduct';
 import ShowProducts from './pages/ShowProducts';
 import { Navigate } from 'react-router-dom';
+import { set_cart } from './reducers/cartReducer';
+import Cart from './pages/Cart';
 
 function App() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
-
-  useEffect(() => {
-    dispatch(initialize());
-  }, [dispatch]);
 
   useEffect(() => {
     const userJSON = window.localStorage.getItem('user');
@@ -30,13 +28,28 @@ function App() {
     }
   }, [dispatch]);
 
+  useEffect(() => {
+    dispatch(initialize());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (user) {
+      // Assuming `authUser` holds the current authenticated user
+      dispatch(set_cart());
+    }
+  }, [user, dispatch]);
+
   return (
     <Router>
       <Routes>
         <Route
+          path='/cart/:id'
+          element={user ? <Cart /> : <Navigate replace to='/' />}
+        />
+        <Route
           path='/edit/:id'
-          element={user &&
-            user.role === 'Admin' ? (
+          element={
+            user && user.role === 'Admin' ? (
               <EditProduct />
             ) : (
               <Navigate replace to='/' />

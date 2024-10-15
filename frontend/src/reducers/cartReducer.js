@@ -17,8 +17,12 @@ export const { setCart, appendProduct, updateProduct } = cartSlice.actions;
 
 export const set_cart = () => {
   return async (dispatch) => {
-    const cart = await cartService.getCart();
-    dispatch(setCart(cart));
+    try {
+      const cart = await cartService.getCart();
+      dispatch(setCart(cart));
+    } catch (e) {
+      console.log(e.message);
+    }
   };
 };
 

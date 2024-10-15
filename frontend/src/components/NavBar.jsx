@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { set_user } from '../reducers/userReducer';
 // import { useSelector } from 'react-redux';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { setCart } from '../reducers/cartReducer';
 
 const StyledButton = styled(Button)(() => ({
   my: 2,
@@ -63,6 +64,7 @@ function ResponsiveAppBar() {
         break;
       case 'Logout':
         dispatch(set_user(''));
+        dispatch(setCart([]));
         window.localStorage.clear();
         navigate('/');
     }

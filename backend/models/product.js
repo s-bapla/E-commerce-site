@@ -7,7 +7,6 @@ const productSchema = new Schema({
   description: String,
   imageUrl: String,
   price: { type: Number, required: true },
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 });
 
 productSchema.set('toJSON', {

@@ -4,8 +4,15 @@ import PropTypes from 'prop-types';
 import { Button, CardContent, CardMedia, Typography } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { IconButton } from '@mui/material';
+import { useDispatch } from 'react-redux';
+import { add_cart } from '../../reducers/cartReducer';
 
 const ProductCard = ({ product }) => {
+const dispatch = useDispatch();
+  const handleCart = (e) => {
+    e.preventDefault();
+    dispatch(add_cart({product: product.id, quantity: 1}))
+  }
   return (
     <Card elevation={5} sx={{ width: 330 }}>
       <CardHeader title={product.title} />
@@ -19,7 +26,7 @@ const ProductCard = ({ product }) => {
         <Typography variant='body2' sx={{ color: 'text.secondary', margin: 1 }}>
           {product.description}
         </Typography>
-        <IconButton>
+        <IconButton onClick={handleCart}>
           <ShoppingCartIcon sx={{ color: '#1976d2' }} />
         </IconButton>
         <Button>Save</Button>
