@@ -43,7 +43,7 @@ export const addProduct = (product) => {
       const p = await productServices.createNew(product);
       dispatch(appendProduct(p));
     } catch (e) {
-      console.log(e.message);
+      console.log(e);
     }
   };
 };

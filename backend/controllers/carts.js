@@ -12,7 +12,6 @@ const getTokenFrom = (request) => {
 };
 
 const authMiddleWare = (request, response, next) => {
-  console.log(getTokenFrom(request));
   const decodedUserToken = jwt.verify(
     getTokenFrom(request),
     process.env.SECRET
@@ -83,6 +82,29 @@ router.put('/', authMiddleWare, async (req, res) => {
   const newCart = await cart.save();
   await newCart.populate('products.product');
   res.json(newCart.products);
+});
+
+router.delete('/:productId', authMiddleWare, async (req, res) => {
+  const { productId } = req.params;
+
+  const cart = await Cart.findOne({ user: req.user.id });
+
+  if (!cart) {
+    return res.status(404).json({ error: 'Cart not found' });
+  }
+
+  const updatedProducts = cart.products.filter(
+    (item) => item.product.toString() !== productId
+  );
+
+  if (updatedProducts.length === cart.products.length) {
+    return res.status(404).json({ error: 'Product not found in cart' });
+  }
+
+  cart.products = updatedProducts;
+  await cart.save();
+
+  res.status(200).json(cart);
 });
 
 module.exports = router;

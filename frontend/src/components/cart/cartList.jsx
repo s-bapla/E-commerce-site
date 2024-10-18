@@ -1,62 +1,71 @@
-import Box from '@mui/material/Box';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import { FixedSizeList } from 'react-window';
+import {
+  Box,
+  Card,
+  CardContent,
+  CardMedia,
+  IconButton,
+  Typography,
+  TextField,
+} from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { Container, IconButton, Typography } from '@mui/material';
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
-import { ListItemAvatar, Avatar } from '@mui/material';
 import { update_cart } from '../../reducers/cartReducer';
+import TotalAndCheckout, { formatCurrency } from './TotalAndCheckout';
 
-function RenderRow(props) {
-  const { index, style } = props;
+function RenderRow({ index, style }) {
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart);
+  const item = cart[index];
 
-  const increment = (e) => {
-    e.preventDefault();
-    console.log(cart)
+  const increment = () => {
     dispatch(
       update_cart({
-        product: cart[index].product.id,
-        quantity: cart[index].quantity + 1,
+        product: item.product.id,
+        quantity: item.quantity + 1,
       })
     );
   };
 
-    const decrement = (e) => {
-      e.preventDefault();
-      dispatch(
-        update_cart({
-          product: cart[index].product.id,
-          quantity: cart[index].quantity - 1,
-        })
-      );
-    };
+  const decrement = () => {
+    dispatch(
+      update_cart({
+        product: item.product.id,
+        quantity: item.quantity - 1,
+      })
+    );
+  };
 
   return (
-    <ListItem style={style} key={index} component='div' disablePadding>
-      <ListItemAvatar>
-        <Avatar variant='square'>
-          <img src={cart[index].product.imageUrl} />
-        </Avatar>
-      </ListItemAvatar>
-      <ListItemText
-        primary={`Item: ${cart[index] ? cart[index].product.title : ''}`}
+    <Card sx={{ display: 'flex', mb: 2, boxShadow: 3 }} style={style}>
+      <CardMedia
+        component='img'
+        image={item.product.imageUrl}
+        alt={item.product.title}
+        sx={{ width: 120, height: 120, objectFit: 'cover' }}
       />
-      <IconButton onClick={decrement}>
-        <RemoveIcon></RemoveIcon>
-      </IconButton>
-      <Box>
-        <Typography>
-          {`Quantity: ${cart[index] ? cart[index].quantity : ' '}`}
+      <CardContent sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <Typography variant='h6'>{item.product.title}</Typography>
+        <Typography variant='body2' color='text.secondary'>
+          {`Price: ${formatCurrency(item.product.price)}`}
         </Typography>
-      </Box>
-      <IconButton onClick={increment}>
-        <AddIcon />
-      </IconButton>
-    </ListItem>
+        <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+          <IconButton onClick={decrement}>
+            <RemoveIcon />
+          </IconButton>
+          <TextField
+            value={item.quantity}
+            inputProps={{ readOnly: true }}
+            variant='outlined'
+            size='small'
+            sx={{ width: 50, textAlign: 'center', mx: 1 }}
+          />
+          <IconButton onClick={increment}>
+            <AddIcon />
+          </IconButton>
+        </Box>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -64,32 +73,37 @@ export default function CartList() {
   const cart = useSelector((state) => state.cart);
 
   return (
-    <Container
+    <Box
       sx={{
         display: 'flex',
+        flexDirection: 'column',
         justifyContent: 'center',
+        alignItems: 'center',
+        mt: 4,
+        p: 2,
       }}
     >
       <Box
         sx={{
-          display: 'flex',
-          justifyContent: 'center',
           width: '100%',
-          height: 400,
           maxWidth: 900,
           bgcolor: 'background.paper',
+          borderRadius: 2,
+          boxShadow: 2,
+          p: 2,
+          height: '400px',
+          overflowY: 'scroll',
         }}
       >
-        <FixedSizeList
-          height={400}
-          width={900}
-          itemSize={46}
-          itemCount={cart.length}
-          overscanCount={5}
-        >
-          {RenderRow}
-        </FixedSizeList>
+        {cart.map((_, index) => (
+          <RenderRow
+            key={index}
+            index={index}
+            style={{ marginBottom: '10px' }}
+          />
+        ))}
       </Box>
-    </Container>
+      <TotalAndCheckout />
+    </Box>
   );
 }

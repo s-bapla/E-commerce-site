@@ -32,11 +32,22 @@ router.post('/', async (req, res) => {
   result.cart = cart;
   await cart.save();
   await result.save();
-  const userForToken = { username: result.username, id: result._id };
+  const userForToken = {
+    username: result.username,
+    id: result._id,
+    role: result.role,
+  };
 
   const token = jwt.sign(userForToken, process.env.SECRET);
 
-  res.status(201).send({ token, username: result.username, id: result.id });
+  res
+    .status(201)
+    .send({
+      token,
+      username: result.username,
+      id: result.id,
+      role: result.role,
+    });
 });
 
 module.exports = router;

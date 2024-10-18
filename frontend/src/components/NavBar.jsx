@@ -22,6 +22,7 @@ import { set_user } from '../reducers/userReducer';
 // import { useSelector } from 'react-redux';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { setCart } from '../reducers/cartReducer';
+import { set_orders, setOrders } from '../reducers/orderReducer';
 
 const StyledButton = styled(Button)(() => ({
   my: 2,
@@ -31,7 +32,7 @@ const StyledButton = styled(Button)(() => ({
     background: blue[300],
   },
 }));
-const pages = ['Products', 'Cart', 'Admin Products', 'Add Products'];
+const pages = ['Products', 'Cart', 'Admin Products', 'Add Products', 'Orders'];
 const settings = ['Orders', 'Cart', 'Logout'];
 const settingsLoggedOut = ['Sign Up', 'Log In'];
 function ResponsiveAppBar() {
@@ -65,6 +66,7 @@ function ResponsiveAppBar() {
       case 'Logout':
         dispatch(set_user(''));
         dispatch(setCart([]));
+        dispatch(setOrders([]));
         window.localStorage.clear();
         navigate('/');
     }
@@ -81,6 +83,13 @@ function ResponsiveAppBar() {
         break;
       case 'Cart':
         navigate(`/cart/${user.id}`);
+        break;
+      case 'Admin Products':
+        navigate('/admin');
+        break;
+      case 'Orders':
+        dispatch(set_orders());
+        navigate('/orders');
     }
   };
 
@@ -137,24 +146,53 @@ function ResponsiveAppBar() {
               {pages.map((page) => {
                 if (
                   (page === 'Admin Products' || page === 'Add Products') &&
-                  user &&
-                  user.role === 'Admin'
+                  user?.role === 'admin'
                 ) {
                   return (
-                    <MenuItem key={page} onClick={() => handleNavigate(page)}>
-                      <Typography sx={{ textAlign: 'center' }}>
-                        {page}
-                      </Typography>
-                    </MenuItem>
+                    <StyledButton
+                      sx={{ color: 'black', width: '100%' }}
+                      key={page}
+                      onClick={() => handleNavigate(page)}
+                    >
+                      {page}
+                    </StyledButton>
                   );
                 }
-                if (page === 'Products' || page === 'Cart') {
+
+                // Render 'Products' for all users
+                if (page === 'Products') {
                   return (
-                    <MenuItem key={page} onClick={() => handleNavigate(page)}>
-                      <Typography sx={{ textAlign: 'center' }}>
-                        {page}
-                      </Typography>
-                    </MenuItem>
+                    <StyledButton
+                      sx={{ color: 'black', width: '100%' }}
+                      key={page}
+                      onClick={() => handleNavigate(page)}
+                    >
+                      {page}
+                    </StyledButton>
+                  );
+                }
+
+                // Render 'Cart' only if the user is logged in
+                if (page === 'Cart' && user) {
+                  return (
+                    <StyledButton
+                      sx={{ color: 'black', width: '100%' }}
+                      key={page}
+                      onClick={() => handleNavigate(page)}
+                    >
+                      {page}
+                    </StyledButton>
+                  );
+                }
+                if (page === 'Orders' && user) {
+                  return (
+                    <StyledButton
+                      key={page}
+                      onClick={() => handleNavigate(page)}
+                      sx={{ color: 'black', width: '100%' }}
+                    >
+                      {page}
+                    </StyledButton>
                   );
                 }
                 return null;
@@ -183,9 +221,8 @@ function ResponsiveAppBar() {
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => {
               if (
-                (pages === 'Admin Products' || pages === 'Add Products') &&
-                user &&
-                user.role === 'Admin'
+                (page === 'Admin Products' || page === 'Add Products') &&
+                user?.role === 'admin'
               ) {
                 return (
                   <StyledButton key={page} onClick={() => handleNavigate(page)}>
@@ -193,6 +230,8 @@ function ResponsiveAppBar() {
                   </StyledButton>
                 );
               }
+
+              // Render 'Products' for all users
               if (page === 'Products') {
                 return (
                   <StyledButton key={page} onClick={() => handleNavigate(page)}>
@@ -200,7 +239,16 @@ function ResponsiveAppBar() {
                   </StyledButton>
                 );
               }
+
+              // Render 'Cart' only if the user is logged in
               if (page === 'Cart' && user) {
+                return (
+                  <StyledButton key={page} onClick={() => handleNavigate(page)}>
+                    {page}
+                  </StyledButton>
+                );
+              }
+              if (page === 'Orders' && user) {
                 return (
                   <StyledButton key={page} onClick={() => handleNavigate(page)}>
                     {page}
@@ -213,7 +261,7 @@ function ResponsiveAppBar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title='Open settings'>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <AccountCircleIcon sx={{ fontSize: 40, color: 'white'}} />
+                <AccountCircleIcon sx={{ fontSize: 40, color: 'white' }} />
               </IconButton>
             </Tooltip>
             <Menu

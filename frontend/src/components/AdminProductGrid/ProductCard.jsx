@@ -10,6 +10,7 @@ import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { delete_product } from '../../reducers/productReducer';
+import { remove_product_from_cart } from '../../reducers/cartReducer';
 
 const ProductCard = ({ product }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -33,6 +34,7 @@ const ProductCard = ({ product }) => {
   const handleDelete = (e) => {
     e.preventDefault();
     dispatch(delete_product(product.id))
+    dispatch(remove_product_from_cart(product.id))
   }
   return (
     <Card sx={{ width: 330 }}>

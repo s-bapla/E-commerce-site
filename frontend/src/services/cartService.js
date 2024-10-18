@@ -38,4 +38,16 @@ const putCart = async (product) => {
   return res.data;
 };
 
-export default { getCart, postCart, putCart };
+const deleteProduct = async (productId) => {
+  const userJSON = window.localStorage.getItem('user');
+  const user = JSON.parse(userJSON);
+  const config = {
+    headers: {
+      Authorization: 'Bearer ' + user.token,
+    },
+  };
+  const res = await axios.delete(`${baseUrl}/${productId}`, config);
+  return res.data;
+};
+
+export default { getCart, postCart, putCart, deleteProduct };

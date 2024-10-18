@@ -14,6 +14,8 @@ import ShowProducts from './pages/ShowProducts';
 import { Navigate } from 'react-router-dom';
 import { set_cart } from './reducers/cartReducer';
 import Cart from './pages/Cart';
+import Orders from './pages/Orders';
+import { set_orders } from './reducers/orderReducer';
 
 function App() {
   const dispatch = useDispatch();
@@ -32,9 +34,12 @@ function App() {
     dispatch(initialize());
   }, [dispatch]);
 
+    useEffect(() => {
+      dispatch(set_orders());
+    }, [dispatch]);
+
   useEffect(() => {
     if (user) {
-      // Assuming `authUser` holds the current authenticated user
       dispatch(set_cart());
     }
   }, [user, dispatch]);
@@ -49,7 +54,7 @@ function App() {
         <Route
           path='/edit/:id'
           element={
-            user && user.role === 'Admin' ? (
+            user && user.role === 'admin' ? (
               <EditProduct />
             ) : (
               <Navigate replace to='/' />
@@ -59,7 +64,7 @@ function App() {
         <Route
           path='/add-product'
           element={
-            user && user.role === 'Admin' ? (
+            user && user.role === 'admin' ? (
               <AddProduct />
             ) : (
               <Navigate replace to='/' />
@@ -71,8 +76,18 @@ function App() {
         <Route
           path='/admin'
           element={
-            user && user.role === 'Admin' ? (
+            user && user.role === 'admin' ? (
               <ShowAdminProducts />
+            ) : (
+              <Navigate replace to='/' />
+            )
+          }
+        />
+        <Route
+          path='/orders'
+          element={
+            user ? (
+              <Orders />
             ) : (
               <Navigate replace to='/' />
             )
