@@ -1,5 +1,5 @@
 import axios from 'axios';
-const baseUrl = 'http://localhost:3000/api/cart';
+const baseUrl = '/api/cart';
 
 const getCart = async () => {
   const userJSON = window.localStorage.getItem('user');

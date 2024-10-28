@@ -11,6 +11,8 @@ const cartRouter = require('./controllers/carts');
 const orderRouter = require('./controllers/orders');
 const checkoutRouter = require('./controllers/checkout');
 const { handlePaymentFail } = require('./util/fulfillCheckout');
+const Order = require('./models/order');
+
 mongoose.connect(MONGODB_URI).then(() => {
   console.log('started mongo.');
 });
@@ -21,9 +23,8 @@ app.use(cors());
 const bodyParser = require('body-parser');
 const stripe = require('stripe')(process.env.STRIPE_SECRET);
 const { fulfillCheckout } = require('./util/fulfillCheckout');
-const endpointSecret =
-  'whsec_641bd3e355430bcc91fc9ac7e1e0acfd94f3a90b65345ba25432bde22354803c';
-
+const endpointSecret = process.env.ENDPOINT;
+app.use(express.static('dist'));
 app.post(
   '/webhook',
   bodyParser.raw({ type: 'application/json' }),
@@ -82,6 +83,31 @@ app.post(
         }
       } else {
         console.error('No associated payment intent for failed charge.');
+      }
+    } else if (event.type === 'checkout.session.expired') {
+      // Handle expired checkout session
+      const session = event.data.object;
+      const orderId = session.metadata.orderId;
+
+      if (orderId) {
+        try {
+          // Find the order in the database
+          const order = await Order.findOne({ _id: orderId });
+
+          if (!order) {
+            console.error(`Order not found for expired session: ${orderId}`);
+          } else {
+            // Update the order status to reflect the session expiration
+            order.paymentStatus = 'failed';
+            await order.save();
+
+            console.log(`Order ${orderId} marked as expired.`);
+          }
+        } catch (err) {
+          console.error('Error handling expired session:', err.message);
+        }
+      } else {
+        console.error('No associated order for expired session.');
       }
     } else {
       console.log('Unhandled event type:', event.type);

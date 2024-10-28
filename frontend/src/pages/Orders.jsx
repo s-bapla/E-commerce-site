@@ -2,11 +2,31 @@ import { useSelector } from 'react-redux'; // Import hooks from redux
 import Order from '../components/Order/Order';
 import Box from '@mui/material/Box';
 import NavBar from '../components/NavBar';
-import backgroundImage from '../../public/image.jpg';
+import backgroundImage from '../image.jpg';
+import { Pagination } from '@mui/material';
+import { useState } from 'react';
 
 const Orders = () => {
   const orders = useSelector((state) => state.orders); // Select orders from the Redux state
+  const [page, setPage] = useState(1);
+  const ordersPerPage = 4;
 
+  // Calculate total number of pages
+  const getCount = () => {
+    return Math.ceil(orders.length / ordersPerPage);
+  };
+
+  // Get orders for the current page
+  const getDisplayedOrders = () => {
+    const startIndex = (page - 1) * ordersPerPage;
+    const endIndex = startIndex + ordersPerPage;
+    return orders.slice(startIndex, endIndex);
+  };
+
+  // Handle page change
+  const handleChange = (event, value) => {
+    setPage(value);
+  };
   return (
     <>
       <NavBar />
@@ -30,10 +50,20 @@ const Orders = () => {
           }}
         >
           {orders.length > 0 ? (
-            orders.map((order) => <Order key={order.id} order={order} />) // Pass each order to the Order component
+            getDisplayedOrders().map((order) => (
+              <Order key={order.id} order={order} />
+            )) // Pass each order to the Order component
           ) : (
             <p>No orders found.</p>
           )}
+          <Box sx={{ marginTop: 3, marginBottom: 3 }}>
+            <Pagination
+              count={getCount()}
+              page={page}
+              onChange={handleChange}
+              shape='rounded'
+            />
+          </Box>
         </Box>
       </Box>
     </>

@@ -1,4 +1,3 @@
-import React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import List from '@mui/material/List';
@@ -6,9 +5,8 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
 
-// The Order component will accept 'order' as a prop
 const Order = ({ order }) => {
-  // Calculate total price for the order
+
   const calculateTotalPrice = (products) => {
     return products.reduce(
       (total, item) => total + item.product.price * item.quantity,
@@ -32,7 +30,7 @@ const Order = ({ order }) => {
         Payment Status: {order.paymentStatus}
       </Typography>
       <Typography variant='body1' component='div' sx={{ marginBottom: '10px' }}>
-        Fulfillment Status: {order.isFulfilled ? 'Fulfilled' : 'Pending'}
+        Fulfillment Status: {order.isFulfilled ? 'fulfilled' : 'pending'}
       </Typography>
 
       <List>

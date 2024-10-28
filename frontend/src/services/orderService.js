@@ -1,5 +1,5 @@
 import axios from 'axios';
-const baseUrl = 'http://localhost:3000/api/orders';
+const baseUrl = '/api/orders';
 
 const getOrders = async () => {
   const userJSON = window.localStorage.getItem('user');

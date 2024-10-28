@@ -1,20 +1,23 @@
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import PropTypes from 'prop-types';
-import { Button, CardContent, CardMedia, Typography } from '@mui/material';
+import { CardContent, CardMedia, Typography } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { IconButton } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { add_cart } from '../../reducers/cartReducer';
+import { useNavigate } from 'react-router-dom';
 
 const ProductCard = ({ product }) => {
+  const navigate = useNavigate();
 const dispatch = useDispatch();
   const handleCart = (e) => {
     e.preventDefault();
     dispatch(add_cart({product: product.id, quantity: 1}))
+    navigate('/cart')
   }
   return (
-    <Card elevation={5} sx={{ width: 330 }}>
+    <Card elevation={5} sx={{ width: '330px' }}>
       <CardHeader title={product.title} />
       <CardMedia component='img' height='194' image={product.imageUrl} />
       <CardContent>
@@ -23,13 +26,9 @@ const dispatch = useDispatch();
         </Typography>
       </CardContent>{' '}
       <CardContent>
-        <Typography variant='body2' sx={{ color: 'text.secondary', margin: 1 }}>
-          {product.description}
-        </Typography>
         <IconButton onClick={handleCart}>
           <ShoppingCartIcon sx={{ color: '#1976d2' }} />
         </IconButton>
-        <Button>Save</Button>
       </CardContent>
     </Card>
   );

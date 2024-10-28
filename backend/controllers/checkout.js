@@ -28,7 +28,7 @@ const authMiddleWare = (request, response, next) => {
   next();
 };
 
-const YOUR_DOMAIN = 'http://localhost:5173/';
+const YOUR_DOMAIN = 'https://e-commerce-site.fly.dev/';
 
 router.post('/create-checkout-session', authMiddleWare, async (req, res) => {
   const userId = req.user.id;

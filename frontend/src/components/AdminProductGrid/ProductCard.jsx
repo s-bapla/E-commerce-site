@@ -37,7 +37,7 @@ const ProductCard = ({ product }) => {
     dispatch(remove_product_from_cart(product.id))
   }
   return (
-    <Card sx={{ width: 330 }}>
+    <Card elevation={5} sx={{ width: 330 }}>
       <CardHeader
         action={
           <div>

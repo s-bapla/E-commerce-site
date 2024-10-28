@@ -34,9 +34,9 @@ function App() {
     dispatch(initialize());
   }, [dispatch]);
 
-    useEffect(() => {
-      dispatch(set_orders());
-    }, [dispatch]);
+  useEffect(() => {
+    dispatch(set_orders());
+  }, [dispatch]);
 
   useEffect(() => {
     if (user) {
@@ -47,10 +47,6 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route
-          path='/cart/:id'
-          element={user ? <Cart /> : <Navigate replace to='/' />}
-        />
         <Route
           path='/edit/:id'
           element={
@@ -71,6 +67,10 @@ function App() {
             )
           }
         />
+        <Route
+          path='/cart'
+          element={user ? <Cart /> : <Navigate replace to='/' />}
+        />
         <Route path='/signup' element={<SignUp />} />
         <Route path='/login' element={<Login />} />
         <Route
@@ -85,13 +85,7 @@ function App() {
         />
         <Route
           path='/orders'
-          element={
-            user ? (
-              <Orders />
-            ) : (
-              <Navigate replace to='/' />
-            )
-          }
+          element={user ? <Orders /> : <Navigate replace to='/' />}
         />
         <Route path='/' element={<ShowProducts />} />
       </Routes>

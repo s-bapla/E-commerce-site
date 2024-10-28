@@ -31,28 +31,28 @@ const TotalAndCheckout = () => {
 
   const handleCheckout = async (e) => {
     e.preventDefault();
-    dispatch(add_order());
-    dispatch(set_orders());
-    const userJSON = window.localStorage.getItem('user');
-    const user = JSON.parse(userJSON);
-    const config = {
-      headers: {
-        Authorization: 'Bearer ' + user.token,
-      },
-    };
-
     try {
-      console.log('sending post request to checkout');
-      const response = await axios.post(
-        'http://localhost:3000/create-checkout-session',
-        '',
-        config
-      );
-      if (response.data.url) {
-        window.location.href = response.data.url;
-      }
+      dispatch(add_order())
+        .then(() => dispatch(set_orders()))
+        .then(() => {
+          const userJSON = window.localStorage.getItem('user');
+          const user = JSON.parse(userJSON);
+          const config = {
+            headers: {
+              Authorization: 'Bearer ' + user.token,
+            },
+          };
+          console.log('sending post request to checkout');
+          axios
+            .post('/create-checkout-session', '', config)
+            .then((response) => {
+              if (response.data.url) {
+                window.location.href = response.data.url;
+              }
+            });
+        });
     } catch (error) {
-      console.error('Checkout error:', error);
+      console.error('Error handling order:', error);
     }
   };
 

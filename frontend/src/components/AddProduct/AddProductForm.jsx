@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 const AddProductForm = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleAddProduct = (e) => {
     e.preventDefault();
@@ -22,7 +22,7 @@ const AddProductForm = () => {
     navigate('/');
   };
   return (
-    <form style={{ textAlign: 'center' }} onSubmit={handleAddProduct}>
+    <form style={{textAlign: 'center' }} onSubmit={handleAddProduct}>
       <Box m={2}>
         <TextField
           label='Product Name'

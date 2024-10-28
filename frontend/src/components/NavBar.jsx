@@ -33,7 +33,7 @@ const StyledButton = styled(Button)(() => ({
   },
 }));
 const pages = ['Products', 'Cart', 'Admin Products', 'Add Products', 'Orders'];
-const settings = ['Orders', 'Cart', 'Logout'];
+const settings = ['Logout'];
 const settingsLoggedOut = ['Sign Up', 'Log In'];
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -82,7 +82,7 @@ function ResponsiveAppBar() {
         navigate('/add-product');
         break;
       case 'Cart':
-        navigate(`/cart/${user.id}`);
+        navigate(`/cart`);
         break;
       case 'Admin Products':
         navigate('/admin');
@@ -102,7 +102,7 @@ function ResponsiveAppBar() {
             variant='h6'
             noWrap
             component='a'
-            href='#app-bar-with-responsive-menu'
+            href='#'
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -204,7 +204,7 @@ function ResponsiveAppBar() {
             variant='h5'
             noWrap
             component='a'
-            href='#app-bar-with-responsive-menu'
+            href='#'
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },

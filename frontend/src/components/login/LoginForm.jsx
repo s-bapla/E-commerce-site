@@ -28,43 +28,70 @@ const LoginForm = () => {
     dispatch(login(user));
     navigate('/');
   };
+  const handleAdminLogin = async (e) => {
+    e.preventDefault();
+
+    const username = 'admin';
+    const password = 'password';
+
+    const user = { username, password };
+    dispatch(login(user));
+    navigate('/');
+  };
+
+  const handleGuestLogin = async (e) => {
+    e.preventDefault();
+
+    const username = 'guest';
+    const password = 'password';
+
+    const user = { username, password };
+    dispatch(login(user));
+    navigate('/');
+  };
   return (
-    <form style={{ textAlign: 'center' }} onSubmit={handleLogInUser}>
-      <Box m={2}>
-        <TextField
-          label='Username'
-          variant='outlined'
-          required
-          name='username'
-          sx={{ width: '350px' }}
-        />
-      </Box>
-      <Box m={2}>
-        <FormControl sx={{ m: 2, width: '350px' }} variant='outlined'>
-          <InputLabel htmlFor='outlined-adornment-password'>
-            Password
-          </InputLabel>
-          <OutlinedInput
-            id='outlined-adornment-password'
-            type={showPassword ? 'text' : 'password'}
-            endAdornment={
-              <InputAdornment position='end'>
-                <IconButton
-                  aria-label='toggle password visibility'
-                  onClick={handleClickShowPassword}
-                  edge='end'
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
-            label='Password'
-            name='password'
+    <div
+      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+    >
+      <form style={{ textAlign: 'center' }} onSubmit={handleLogInUser}>
+        <Box m={2}>
+          <TextField
+            label='Username'
+            variant='outlined'
+            required
+            name='username'
+            sx={{ width: '350px' }}
           />
-        </FormControl>
-      </Box>
-      <Button type='submit'>Sign Up</Button>
-    </form>
+        </Box>
+        <Box m={2}>
+          <FormControl sx={{ m: 2, width: '350px' }} variant='outlined'>
+            <InputLabel htmlFor='outlined-adornment-password'>
+              Password
+            </InputLabel>
+            <OutlinedInput
+              id='outlined-adornment-password'
+              type={showPassword ? 'text' : 'password'}
+              endAdornment={
+                <InputAdornment position='end'>
+                  <IconButton
+                    aria-label='toggle password visibility'
+                    onClick={handleClickShowPassword}
+                    edge='end'
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+              label='Password'
+              name='password'
+            />
+          </FormControl>
+        </Box>
+        <Button type='submit'>Log In</Button>
+      </form>
+      <Button onClick={handleGuestLogin}>Log In as guest</Button>
+      <Button onClick={handleAdminLogin}>Log In as Admin</Button>
+    </div>
   );
 };
 

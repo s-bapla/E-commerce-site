@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import NavBar from '../components/NavBar';
 import SignUpForm from '../components/SignUp/SignUpForm';
-import backgroundImage from '../../public/image.jpg'; // Make sure to replace with the correct path to your image
+import backgroundImage from '../image.jpg';
 
 const SignUp = () => {
   return (

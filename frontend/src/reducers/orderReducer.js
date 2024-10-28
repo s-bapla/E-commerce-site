@@ -23,7 +23,6 @@ export const set_orders = () => {
     try {
       const orders = await orderService.getOrders(); // [{products: [], user: id}, ...]
       dispatch(setOrders(orders));
-      return orders;
     } catch (e) {
       console.log(e.message);
     }
@@ -35,7 +34,6 @@ export const add_order = () => {
     try {
       const order = await orderService.postOrder();
       dispatch(appendOrder(order));
-      return order
     } catch (e) {
       console.log(e.message);
     }

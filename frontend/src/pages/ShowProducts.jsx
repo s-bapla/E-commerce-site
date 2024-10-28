@@ -1,7 +1,7 @@
 import ProductGrid from '../components/productGrid/ProductGrid';
 import Box from '@mui/material/Box';
 import NavBar from '../components/NavBar';
-import backgroundImage from '../../public/image.jpg'; // Make sure to replace with the correct path to your image
+import backgroundImage from '../image.jpg';
 
 const ShowProducts = () => {
   return (
@@ -13,7 +13,7 @@ const ShowProducts = () => {
           backgroundImage: `url(${backgroundImage})`,
           backgroundSize: 'repeat', // Makes the image cover the entire box
           backgroundPosition: 'center', // Centers the image
-          height: '100vh', // Ensures the background covers the whole viewport height
+          minHeight: '100vh', // Ensures the background covers the whole viewport height
         }}
       >
 
