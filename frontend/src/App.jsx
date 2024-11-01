@@ -1,6 +1,6 @@
 import './App.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { initialize } from './reducers/productReducer';
 import AddProduct from './pages/AddProduct';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -20,6 +20,7 @@ import { set_orders } from './reducers/orderReducer';
 function App() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const userJSON = window.localStorage.getItem('user');
@@ -28,6 +29,7 @@ function App() {
       productService.setToken(user.token);
       dispatch(set_user(user));
     }
+    setLoading(false);
   }, [dispatch]);
 
   useEffect(() => {
@@ -43,6 +45,10 @@ function App() {
       dispatch(set_cart());
     }
   }, [user, dispatch]);
+
+  if (loading) {
+    return <div>loading...</div>
+  }
 
   return (
     <Router>

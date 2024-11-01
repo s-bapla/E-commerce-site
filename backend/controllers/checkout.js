@@ -72,11 +72,16 @@ router.post('/create-checkout-session', authMiddleWare, async (req, res) => {
       mode: 'payment',
       success_url: `${YOUR_DOMAIN}success`,
       cancel_url: `${YOUR_DOMAIN}cancelled`,
+      metadata: {
+        orderId: order._id.toString(), // Attach order ID at the session level
+        userId: userId,
+      },
+      expires_at: Math.floor(Date.now() / 1000) + 30 * 60, //30 minutes from creation,
       expand: ['payment_intent'],
       payment_intent_data: {
         metadata: {
           orderId: order._id.toString(), // Add order ID to payment intent metadata
-          userId: userId, // Optionally add more metadata if needed
+          userId: userId,
         },
       },
     });
@@ -84,23 +89,20 @@ router.post('/create-checkout-session', authMiddleWare, async (req, res) => {
     // Log session creation for debugging
     console.log('Stripe session created:', session.id);
 
-    // Create new CheckoutSession in MongoDB
     const newCheckoutSession = new checkoutSession({
-      sessionId: session.id, // Save the Stripe session ID
-      paymentStatus: 'unpaid', // Stripe will update this later
+      sessionId: session.id,
+      paymentStatus: 'unpaid',
       lineItems: lineItems,
-      isFulfilled: false, // Default value until fulfillment
+      isFulfilled: false,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
 
-    await newCheckoutSession.save(); // Save the session in MongoDB
+    await newCheckoutSession.save();
 
-    // Attach sessionId to the order and save the order
     order.sessionId = session.id;
     await order.save();
 
-    // Return the session URL to the client
     res.status(200).json({ url: session.url, sessionId: session.id });
   } catch (error) {
     console.error('Error during checkout session creation:', error);

@@ -12,6 +12,7 @@ const orderRouter = require('./controllers/orders');
 const checkoutRouter = require('./controllers/checkout');
 const { handlePaymentFail } = require('./util/fulfillCheckout');
 const Order = require('./models/order');
+const path = require('path');
 
 mongoose.connect(MONGODB_URI).then(() => {
   console.log('started mongo.');
@@ -88,11 +89,12 @@ app.post(
       // Handle expired checkout session
       const session = event.data.object;
       const orderId = session.metadata.orderId;
+      console.log(`Order ID from session metadata: ${orderId}`);
 
       if (orderId) {
         try {
           // Find the order in the database
-          const order = await Order.findOne({ _id: orderId });
+          const order = await Order.findById(orderId);
 
           if (!order) {
             console.error(`Order not found for expired session: ${orderId}`);
@@ -127,11 +129,10 @@ app.use('/api/login', loginRouter);
 app.use('/api/cart', cartRouter);
 app.use('/api/orders', orderRouter);
 
-const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: 'unknown endpoint' });
-};
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
+});
 
-app.use(unknownEndpoint);
 app.use(errorHandler);
 
 module.exports = app;
